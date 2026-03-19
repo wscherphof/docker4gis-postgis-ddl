@@ -15,7 +15,7 @@ echo '' >/last
 /subconf.sh /tmp/wms/conf.sh
 
 # Extension images may add extra schemas in /ddl.
-[ -f /ddl/conf.sh ] && /subconf.sh /ddl/conf.sh
+[ -x /ddl/conf.sh ] && /subconf.sh /ddl/conf.sh
 
 # shellcheck disable=SC1091
 source /last
