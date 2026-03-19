@@ -10,7 +10,7 @@ pushd schema/"$(basename "$0" .sh)" &&
         -f things.sql &&
 
     # Prepare for authorised PostgREST access.
-    web.sh &&
+    web/web.sh &&
 
     # Load test data.
     if [ "$DOCKER_ENV" != PRODUCTION ]; then

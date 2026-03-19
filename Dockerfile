@@ -16,31 +16,6 @@ RUN /tmp/runner/install.sh
 COPY conf/.plugins/pg /tmp/pg
 RUN /tmp/pg/install.sh
 
-# Allow configuration before things start up.
-COPY conf/entrypoint /
-
-COPY conf/schema.sh /usr/local/bin/
-COPY conf/last.sh /usr/local/bin/
-COPY ["conf/subconf.sh", "conf/onstart.sh", "conf/entrypoint", "/"]
-
-COPY conf/mail /tmp/mail
-COPY conf/web /tmp/web
-COPY conf/admin /tmp/admin
-COPY conf/wms /tmp/wms
-
-RUN chmod +x /usr/local/bin/schema.sh \
-    /usr/local/bin/last.sh \
-    /subconf.sh \
-    /onstart.sh \
-    /entrypoint
-
-ENTRYPOINT ["/entrypoint"]
-CMD ["postgis-ddl"]
-
-# Make this image work with dg build & dg push.
-COPY conf/.docker4gis /.docker4gis
-COPY build.sh run.sh /.docker4gis/
-
 # Set run time variables for the pg plugin.
 ONBUILD ARG PGHOST
 ONBUILD ENV PGHOST=${PGHOST}
@@ -54,6 +29,24 @@ ONBUILD ARG PGUSER
 ONBUILD ENV PGUSER=${PGUSER:-postgres}
 ONBUILD ARG PGPASSWORD
 ONBUILD ENV PGPASSWORD=${PGPASSWORD:-postgres}
+
+COPY conf/schema.sh /usr/local/bin/
+COPY conf/last.sh /usr/local/bin/
+COPY ["conf/subconf.sh", "conf/onstart.sh", "/"]
+
+COPY conf/mail /tmp/mail
+COPY conf/web /tmp/web
+COPY conf/admin /tmp/admin
+COPY conf/wms /tmp/wms
+
+# Allow configuration before things start up.
+COPY conf/entrypoint /
+ENTRYPOINT ["/entrypoint"]
+CMD ["postgis-ddl"]
+
+# Make this image work with dg build & dg push.
+COPY conf/.docker4gis /.docker4gis
+COPY build.sh run.sh /.docker4gis/
 
 # Set environment variables.
 ONBUILD ARG DOCKER_REGISTRY

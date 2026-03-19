@@ -8,14 +8,6 @@ pushd schema/"$(basename "$0" .sh)"
 PGRST_JWT_SECRET=$(pg.sh -Atc 'select gen_random_uuid()::text || gen_random_uuid()::text')
 pg.sh -c "alter database ${PGDATABASE} set app.jwt_secret to '${PGRST_JWT_SECRET}'"
 
-# Unlike tables/views, functions privileges work as a blacklist, so they’re
-# executable for all the roles by default. You can workaround this by revoking
-# the PUBLIC privileges of the function and then granting privileges to specific
-# roles.
-# Also to avoid doing REVOKE on every function you can enable this behavior by
-# default with:
-pg.sh -c "alter default privileges revoke execute on functions from public"
-
 pg.sh -c "create extension if not exists citext"
 
 pg.sh -f roles.sql
